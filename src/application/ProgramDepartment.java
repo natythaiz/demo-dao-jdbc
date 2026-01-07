@@ -25,16 +25,22 @@ public class ProgramDepartment {
 			System.out.println(obj);
 		}
 		
-		System.out.println("\nTeste n° 3: department insert");
-		Department newDepartment = new Department(null, "Games");
-		departmentDao.insert(newDepartment);
-		System.out.println("Inserted! New id = " + newDepartment.getId());
+//		System.out.println("\nTeste n° 3: department insert");
+//		Department newDepartment = new Department(null, "Games");
+//		departmentDao.insert(newDepartment);
+//		System.out.println("Inserted! New id = " + newDepartment.getId());
 
 		System.out.println("\nTeste n° 4: department update");
 		department = departmentDao.findById(1);
 		department.setName("Computer");
 		departmentDao.update(department);
 		System.out.println("Update Completed!");
+		
+		System.out.println("\nTeste n° 5: department delete");
+		System.out.println("Enter id for delete test: ");
+		int id = scan.nextInt();
+		departmentDao.deleteById(id);
+		System.out.println("Delete completed!");
 		
 		scan.close();
 	}
