@@ -83,7 +83,38 @@ public class SellerDaoJDBC implements SellerDao{
 
 	@Override
 	public List<Seller> findAll() {
-		return null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement("SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department "
+					+ "ON seller.DepartmentId = department.Id "
+					+ "ORDER BY Name");
+			
+			rs = st.executeQuery();
+			
+			List<Seller> list = new ArrayList<>();
+//			vamos usar map pelo conceito de chave e valor, ou seja, se o departamento é o mesmo, ele não vai criar outro e sim adicionar seus vínculos
+			Map<Integer, Department> map = new HashMap<>();
+			
+			while(rs.next()) {
+//				dentro do map vai ter cada departamento que for instanciado
+				Department dep = map.get(rs.getInt("DepartmentId"));
+//				se a busca anterior for nula, significa que o departamento não foi instanciado (nosso primeiro caso)
+				if(dep == null) {
+					dep = instantiateDepartament(rs);
+					map.put(rs.getInt("DepartmentId"), dep);
+				}
+				Seller obj = instatiateSeller(rs, dep);
+				list.add(obj);
+			}
+			return list;
+		} catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
 	}
 
 	@Override
